@@ -2,6 +2,19 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const Cloudinary = require('cloudinary').v2
+
+function isFileTypeSupported (type,supportedTypes){
+    return supportedTypes.includes(type);
+}
+
+async function uploadFileToCloudinary (file,folder){
+    const options = {folder}
+    console.log("temp file path",file.tempFilePath,options)
+    return await Cloudinary.uploader.upload(file.tempFilePath, options);
+
+}
+
 
 
 //User Registration
@@ -9,13 +22,27 @@ require('dotenv').config();
 exports.newUser= async (req,res)=>{
     try{
         const {name,email,contact,password,profilePic} = req.body;
-        if(!name || !email || !contact || !password ||!profilePic){
+        const file = req.files.imageFile;
+        console.log(file);
+
+        const supportedTypes = ["jpg","jpeg","png"];
+        const fileType = file.name.split('.')[1].toLowerCase();
+        console.log("fileType",fileType);
+
+        if(!isFileTypeSupported(fileType,supportedTypes)){
+            return res.json({
+                success:false,
+                message:"file format not supported"
+            })
+
+        }
+        if(!name || !email || !contact || !password ){
             return res.json({
                 success:false,
                 message:"all fields are required"
             })
         }
-        let hashedPassword = bcrypt.hash(password,10);
+        let hashedPassword = await bcrypt.hash(password,10);
         if(!hashedPassword){
             return res.json({
                 success:false,
@@ -23,12 +50,16 @@ exports.newUser= async (req,res)=>{
             })
         }
 
+        console.log("uploading to cloudinary");
+        const response = await uploadFileToCloudinary(file, 'SmApp');
+        console.log(response);
+
         const savedUser = await User.create({
             name,
             email,
             contact,
             password:hashedPassword,
-            profilePic
+            profilePic:response.secure_url
         });
 
         return res.json({
@@ -38,12 +69,13 @@ exports.newUser= async (req,res)=>{
         })
 
 
-    }catch{
-        res.json({
-            success:false,
-            message:"error while registering"
-        })
-
+    }catch (error) {
+        console.error("Error during login:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error while login process",
+            error: error.message, 
+        });
     }
 }
 
@@ -58,7 +90,7 @@ exports.login=async (req,res) => {
                 message:"all fields are required"
             })
         }
-        const checkUser = await User.find({email});
+        const checkUser = await User.findOne({email});
         if(!checkUser){
             return res.json({
                 success:false,
