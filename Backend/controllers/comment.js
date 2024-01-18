@@ -26,40 +26,45 @@ exports.commentOnPost = async (req,res)=>{
     }
 }
 
-exports.deleteComment = async (req,res)=> {
-         
+exports.deleteComment = async (req, res) => {
     try {
-        
+        let comment = await Comment.findById(req.params.id);
 
-        let comment= await Comment.findById(req.params.id);
-        if(!comment) {return res.status(404).send("Not Found")}
-
-
-     
-        comment = await Comment.findByIdAndDelete(req.params.id);
-    
         if (!comment) {
-          
-          return res.status(404).json({
-            success: false,
-            message: 'Post not found',
-          });
+            return res.status(404).send("Not Found");
         }
-    
-        const updatedPost = await Post.findByIdAndUpdate(post,{$pull:{comment:savedComment._id}},{new:true}).populate('comment').exec();
-    
+
+        
+        const postId = comment.post;
+
+       
+        comment = await Comment.findByIdAndDelete(req.params.id);
+
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Comment not found',
+            });
+        }
+
+       
+        const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            { $pull: { comment: req.params.id } },
+            { new: true }
+        ).populate('comment').exec();
+
         res.json({
-          success: true,
-          message: 'Comment deleted successfully',
+            success: true,
+            message: 'Comment deleted successfully',
+            updatedPost,
         });
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).json({
-          success: false,
-          message: 'An error occurred while deleting the comment',
+            success: false,
+            message: 'An error occurred while deleting the comment',
+            error: error.message,
         });
-      }
-   
-   
-    
-}
+    }
+};

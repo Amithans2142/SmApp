@@ -3,7 +3,7 @@ const app = express();
 const route = express.Router();
 const {newUser,login} = require('../controllers/auth');
 const {createPost} = require('../controllers/post');
-const {likePost} = require('../controllers/like');
+const {likePost,unlikePost} = require('../controllers/like');
 const {commentOnPost,deleteComment} = require('../controllers/comment');
 const {allPosts} = require('../controllers/post');
 const {deletePost} = require('../controllers/deletePost');
@@ -20,5 +20,5 @@ route.get('/posts',user,allPosts);
 route.delete('/delete/:id',deletePost);
 route.put('/update/:id',updatePost);
 route.delete('/delete-comment/:id',deleteComment);
-
+route.delete('/unlike/:id',unlikePost);
 module.exports = route;
