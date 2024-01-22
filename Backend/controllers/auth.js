@@ -70,10 +70,10 @@ exports.newUser= async (req,res)=>{
 
 
     }catch (error) {
-        console.error("Error during login:", error.message);
+        console.error("Error during signup:", error.message);
         res.status(500).json({
             success: false,
-            message: "Error while login process",
+            message: "Error while signup process",
             error: error.message, 
         });
     }

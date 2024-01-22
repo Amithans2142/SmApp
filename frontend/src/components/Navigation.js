@@ -3,22 +3,34 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 function Navigation() {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+  }
+
+  const isLoggedIn = localStorage.getItem("token");
+
   return (
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
           <Navbar.Brand href="/home">Social Media App</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/signup">SignUp</Nav.Link>
+            <Nav.Link href="/home">Home</Nav.Link>
+
+            {isLoggedIn ? (
+              <Nav.Link href="/login" onClick={handleLogout}>Logout</Nav.Link>
+            ) : (
+              <>
+                <Nav.Link href="/login">Login</Nav.Link>
+                <Nav.Link href="/signup">Signup</Nav.Link>
+              </>
+            )}
+
             {/* <Nav.Link href="#pricing">Pricing</Nav.Link> */}
           </Nav>
         </Container>
       </Navbar>
       <br />
-      
-
-     
     </>
   );
 }

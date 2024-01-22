@@ -3,13 +3,21 @@ const app = express();
 require('dotenv').config();
 const {connectToDb}=require('./config/Database');
 const route = require('./routes/route');
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+
+const cors = require('cors');
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  }));
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({
     useTempFiles : true,
     tempFileDir : '/tmp/'
 }));
-const cloudinary = require('../Backend/utils/imageUploader');
+const cloudinary = require('./utils/imageUploader');
 cloudinary.connectToCloudinary();
 
 const Port = process.env.PORT || 4000;
