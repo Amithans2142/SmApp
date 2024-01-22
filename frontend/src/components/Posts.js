@@ -15,7 +15,7 @@ const Posts = () => {
 
     
     <div>
-        posts
+        <h1>Posts</h1>
         {
             loading ? (<Spinner/>) : (
                 posts?.length === 0 ? (

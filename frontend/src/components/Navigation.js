@@ -1,13 +1,20 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 function Navigation() {
   const handleLogout = () => {
     localStorage.removeItem("token");
   }
 
-  const isLoggedIn = localStorage.getItem("token");
+  let navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem('token');
+
+  if (!isLoggedIn) {
+    navigate('/login');
+    
+  }
 
   return (
     <>
