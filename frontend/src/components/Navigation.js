@@ -20,9 +20,9 @@ function Navigation() {
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="/home">Social Media App</Navbar.Brand>
+          <Navbar.Brand href="/">Social Media App</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/home">Home</Nav.Link>
+            <Nav.Link href="/">Home</Nav.Link>
 
             {isLoggedIn ? (
               <Nav.Link href="/login" onClick={handleLogout}>Logout</Nav.Link>

@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div>
       <Post />
-      <Posts />
+      {/* <Posts /> */}
     </div>
   );
 };

@@ -26,7 +26,7 @@ function Login() {
         console.log(data);
         if(data.success){
             localStorage.setItem("token",data.token);
-            navigate('/home');
+            navigate('/');
         }
     }catch(error){
         console.log(error)
@@ -42,7 +42,7 @@ function Login() {
   useEffect(()=>{
     const token =localStorage.getItem("token");
     if(token){
-        navigate('/home');
+        navigate('/');
     }
   },[navigate])
   return (
